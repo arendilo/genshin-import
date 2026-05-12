@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "657891757060",
+    "project_id": "genshin-import-c716b",
+    "storage_bucket": "genshin-import-c716b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657891757060:android:4b1eb5fbc1aa23f155b951",
+        "android_client_info": {
+          "package_name": "com.example.genshin_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4Elfi2XUbXwIvFxQ_nj2LDi1ubaL0Vjg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
