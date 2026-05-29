@@ -13,4 +13,12 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-module.exports = { authenticateToken };
+const requireAdmin = (req, res, next) => {
+    if (req.user && req.user.role.toLowerCase() === 'admin') {
+        next();
+    } else {
+        return res.status(403).json({ message: "Access Denied! Only Admins can perform this action." });
+    }
+};
+
+module.exports = { authenticateToken, requireAdmin };

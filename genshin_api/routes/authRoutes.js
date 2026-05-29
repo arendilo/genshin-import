@@ -37,10 +37,8 @@ router.post('/login', (req, res) => {
 
 // LOGIN GOOGLE OAUTH
 const { OAuth2Client } = require('google-auth-library');
-// Gunakan Client ID dari Google Cloud Console yang sama dengan di Flutter
 const client = new OAuth2Client('535434343700-bnlkpbs26hr2pi2o4kkn9s6qgoo95qm2.apps.googleusercontent.com');
 
-// LOGIN GOOGLE OAUTH
 router.post('/google', async (req, res) => {
     // Now extracting email and name from the request body as well
     const { idToken, accessToken, email: reqEmail, name: reqName } = req.body;

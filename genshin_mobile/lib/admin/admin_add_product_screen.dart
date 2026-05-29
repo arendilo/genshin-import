@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:shared_preferences/shared_preferences.dart'; // Ditambahkan untuk ambil token
+import 'package:shared_preferences/shared_preferences.dart'; 
 
 class AdminAddProductScreen extends StatefulWidget {
   const AdminAddProductScreen({Key? key}) : super(key: key);
@@ -42,9 +42,6 @@ class _AdminAddProductScreenState extends State<AdminAddProductScreen> {
         _pickedFile != null;
   }
 
-  // ==============================================================
-  // LOGIKA ADD PRODUCT DENGAN TOKEN JWT
-  // ==============================================================
   Future<void> _addProduct() async {
     if (!_isValid) {
       _showSnackBar('Please fill all fields and pick an image!', Colors.orange);
@@ -54,7 +51,6 @@ class _AdminAddProductScreenState extends State<AdminAddProductScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // 1. Ambil Token dari memori HP
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
 
@@ -67,7 +63,6 @@ class _AdminAddProductScreenState extends State<AdminAddProductScreen> {
         Uri.parse('$baseUrl/products'),
       );
 
-      // 2. Selipkan Token ke Header (Syarat Dosen)
       if (token != null) {
         request.headers['Authorization'] = 'Bearer $token';
       }
@@ -110,10 +105,6 @@ class _AdminAddProductScreenState extends State<AdminAddProductScreen> {
       if (mounted) setState(() => _isLoading = false);
     }
   }
-
-  // ==============================================================
-  // UI DI BAWAH INI 100% TETAP SEPERTI ASLINYA
-  // ==============================================================
 
   void _showSnackBar(String msg, Color color) {
     ScaffoldMessenger.of(
@@ -326,7 +317,7 @@ class _AdminAddProductScreenState extends State<AdminAddProductScreen> {
                 ),
               )
             : const Text(
-                'Save to MySQL',
+                'Product Added',
                 style: TextStyle(
                   color: Color(0xFF1A0F35),
                   fontWeight: FontWeight.bold,

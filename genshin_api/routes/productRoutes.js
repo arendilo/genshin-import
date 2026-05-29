@@ -1,7 +1,7 @@
+const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
-const { authenticateToken } = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
 
@@ -33,7 +33,7 @@ router.get('/:id', (req, res) => {
 });
 
 // CREATE PRODUCT
-router.post('/', authenticateToken, upload.single('image'), (req, res) => {
+router.post('/', authenticateToken, requireAdmin, upload.single('image'), (req, res) => {
     const { name, type, rarity, price, stock, description } = req.body;
     const imageUrl = req.file ? `http://localhost:${process.env.PORT || 3000}/uploads/${req.file.filename}` : null;
     const query = "INSERT INTO products (name, type, rarity, price, stock, description, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -44,7 +44,7 @@ router.post('/', authenticateToken, upload.single('image'), (req, res) => {
 });
 
 // UPDATE PRODUCT
-router.put('/:id', authenticateToken, upload.single('image'), (req, res) => {
+router.put('/:id', authenticateToken, requireAdmin, upload.single('image'), (req, res) => {
     const { name, type, rarity, price, stock, description } = req.body;
     const productId = req.params.id;
 
@@ -65,7 +65,7 @@ router.put('/:id', authenticateToken, upload.single('image'), (req, res) => {
 });
 
 // DELETE PRODUCT
-router.delete('/:id', authenticateToken, (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin,(req, res) => {
     db.query("DELETE FROM products WHERE id = ?", [req.params.id], (err) => {
         if (err) return res.status(500).json(err);
         res.json({ success: true, message: "Weapon deleted!" });
