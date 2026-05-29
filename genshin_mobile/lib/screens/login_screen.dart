@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
         clientId:
-            'CLIENT_ID_LONG_STRING_KAMU_DISINI.apps.googleusercontent.com',
+            '535434343700-bnlkpbs26hr2pi2o4kkn9s6qgoo95qm2.apps.googleusercontent.com',
         scopes: ['email', 'profile'],
       );
 
@@ -123,12 +123,16 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
       final response = await http.post(
         Uri.parse('$baseUrl/auth/google'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'email': googleUser.email,
-          'name': googleUser.displayName ?? 'Google User',
+          'idToken': googleAuth.idToken, 
+          'accessToken': googleAuth.accessToken,
+          'email': googleUser.email,                   // SEND DIRECT EMAIL
+          'name': googleUser.displayName ?? 'Google User' // SEND DIRECT NAME
         }),
       );
 
