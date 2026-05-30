@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:genshin_mobile/buying/cart_item.dart';
 import 'package:genshin_mobile/buying/checkout_screen.dart';
-import 'package:flutter/foundation.dart' show kIsWeb; // Tambahkan ini
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -13,12 +13,10 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   List<CartItem> get _cartItems => CartState.items;
 
-  // --- FUNGSI BARU: BIAR GAMBAR MUNCUL DI EMULATOR ---
   String _formatImageUrl(String? url) {
     if (url == null || url.isEmpty) return '';
-    if (kIsWeb) return url; // Kalau di web aman pakai localhost
+    if (kIsWeb) return url; 
 
-    // Kalau di Emulator Android, ganti localhost jadi 10.0.2.2
     return url
         .replaceAll('localhost', '10.0.2.2')
         .replaceAll('127.0.0.1', '10.0.2.2');
@@ -141,7 +139,6 @@ class _CartScreenState extends State<CartScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- FIX: BAGIAN GAMBAR DISINI ---
               Container(
                 width: 80,
                 height: 80,
@@ -153,7 +150,7 @@ class _CartScreenState extends State<CartScreen> {
                   borderRadius: BorderRadius.circular(10),
                   child: (item.image != null && item.image!.isNotEmpty)
                       ? Image.network(
-                          _formatImageUrl(item.image), // PAKAI FUNGSI DINAMIS
+                          _formatImageUrl(item.image), 
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               const Icon(

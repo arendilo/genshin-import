@@ -23,20 +23,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   int get _total =>
       _items.fold(0, (sum, item) => sum + (item.price * item.quantity));
 
-  // ==============================================================
-  // LOGIKA CHECKOUT (FIXED: Bawa Token & Data Aman)
-  // ==============================================================
   Future<void> _processCheckout() async {
     if (_items.isEmpty) return;
 
     setState(() => _isProcessing = true);
 
     try {
-      // 1. Ambil Token dan User ID
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
 
-      // Ambil User ID (konversi dari String ke int secara aman)
       String? storedUserId = prefs.getString('user_id');
       int userId = (storedUserId != null)
           ? (int.tryParse(storedUserId) ?? 1)
@@ -46,18 +41,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ? 'http://127.0.0.1:3000'
           : 'http://10.0.2.2:3000';
 
-      // 2. Map data item dengan proteksi null-safety
       List<Map<String, dynamic>> orderData = _items.map((item) {
         return {
           'id': item.id,
           'name':
-              item.name ?? 'Weapon', // Nama wajib ada untuk tabel order_items
+              item.name ?? 'Weapon',
           'quantity': item.quantity,
           'price': item.price,
         };
       }).toList();
 
-      // 3. Tembak API Node.js dengan Header Authorization
       final response = await http.post(
         Uri.parse('$baseUrl/checkout'),
         headers: {
@@ -67,13 +60,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         body: jsonEncode({'user_id': userId, 'items': orderData}),
       );
 
-      // Debugging untuk kamu (bisa cek di terminal kalau gagal)
       debugPrint("Checkout Response: ${response.body}");
 
       if (response.statusCode == 200) {
         if (!mounted) return;
 
-        // Berhasil! Pindah ke layar sukses
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -81,7 +72,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
         );
       } else {
-        // Gagal (Pesan dari server)
         final errorData = jsonDecode(response.body);
         _showSnackBar(
           errorData['message'] ?? 'Checkout failed!',
@@ -89,7 +79,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         );
       }
     } catch (e) {
-      // Error Koneksi
       _showSnackBar('Connection error! check your server.', Colors.redAccent);
     } finally {
       if (mounted) setState(() => _isProcessing = false);
@@ -101,10 +90,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       context,
     ).showSnackBar(SnackBar(content: Text(msg), backgroundColor: color));
   }
-
-  // ==============================================================
-  // UI DI BAWAH TETAP 100% ORIGINAL PUNYA KAMU
-  // ==============================================================
 
   @override
   Widget build(BuildContext context) {

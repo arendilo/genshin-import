@@ -40,13 +40,11 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client('535434343700-bnlkpbs26hr2pi2o4kkn9s6qgoo95qm2.apps.googleusercontent.com');
 
 router.post('/google', async (req, res) => {
-    // Now extracting email and name from the request body as well
     const { idToken, accessToken, email: reqEmail, name: reqName } = req.body;
     let email, name;
 
     try {
         if (idToken) {
-            // Android/iOS usually provides idToken
             const ticket = await client.verifyIdToken({
                 idToken: idToken,
                 audience: '535434343700-bnlkpbs26hr2pi2o4kkn9s6qgoo95qm2.apps.googleusercontent.com', 
@@ -56,15 +54,12 @@ router.post('/google', async (req, res) => {
             name = payload.name;
         } 
         else if (accessToken) {
-            // Backup for web if it provides an accessToken
             client.setCredentials({ access_token: accessToken });
             const userInfo = await client.request({ url: 'https://www.googleapis.com/oauth2/v3/userinfo' });
             email = userInfo.data.email;
             name = userInfo.data.name || 'Google User';
         }
         else if (reqEmail) {
-            // ULTIMATE FALLBACK FOR FLUTTER WEB
-            // If tokens are totally blocked by Google's new web security, use the email directly.
             email = reqEmail;
             name = reqName || 'Google User';
         }
@@ -72,7 +67,6 @@ router.post('/google', async (req, res) => {
             return res.status(400).json({ success: false, message: "No valid authentication method found." });
         }
 
-        // DATABASE LOGIC (unchanged)
         db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
             if (err) return res.status(500).json({ success: false, message: err.message });
 
@@ -81,20 +75,20 @@ router.post('/google', async (req, res) => {
                 const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
                 res.json({
                     success: true,
-                    message: "Login Google Berhasil",
+                    message: "Login Google Successfull",
                     token: token,
                     user: { id: user.id, name: user.name, email: user.email, role: user.role }
                 });
             } else {
                 db.query("INSERT INTO users (name, email, password, role) VALUES (?, ?, '', 'User')", [name, email], (err, insertResult) => {
-                    if (err) return res.status(500).json({ success: false, message: "Gagal membuat user baru" });
+                    if (err) return res.status(500).json({ success: false, message: "Failed to make new user" });
 
                     const newUserId = insertResult.insertId;
                     const token = jwt.sign({ id: newUserId, role: 'User' }, JWT_SECRET, { expiresIn: '24h' });
 
                     res.json({
                         success: true,
-                        message: "Akun Google berhasil didaftarkan",
+                        message: "Account Google Seccessfully Registered",
                         token: token,
                         user: { id: newUserId, name: name, email: email, role: 'User' }
                     });
@@ -103,7 +97,7 @@ router.post('/google', async (req, res) => {
         });
     } catch (error) {
         console.error("Google Auth Error:", error.message);
-        res.status(401).json({ success: false, message: "Autentikasi Google gagal pada server." });
+        res.status(401).json({ success: false, message: "Google Authentication failed on server." });
     }
 });
 module.exports = router;

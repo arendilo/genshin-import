@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:shared_preferences/shared_preferences.dart'; // Import untuk ambil token
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminEditProductScreen extends StatefulWidget {
   final int productId;
@@ -72,9 +72,6 @@ class _AdminEditProductScreenState extends State<AdminEditProductScreen> {
     if (image != null) setState(() => _pickedFile = image);
   }
 
-  // ==============================================================
-  // LOGIKA SAVE (PUT) DENGAN TOKEN JWT
-  // ==============================================================
   Future<void> _handleSave() async {
     if (_nameController.text.isEmpty ||
         _priceController.text.isEmpty ||
@@ -86,7 +83,6 @@ class _AdminEditProductScreenState extends State<AdminEditProductScreen> {
     setState(() => _isSaving = true);
 
     try {
-      // 1. Ambil Token dari HP
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
 
@@ -99,7 +95,6 @@ class _AdminEditProductScreenState extends State<AdminEditProductScreen> {
         Uri.parse('$baseUrl/products/${widget.productId}'),
       );
 
-      // 2. Selipkan Token ke Header (Syarat Dosen)
       if (token != null) {
         request.headers['Authorization'] = 'Bearer $token';
       }
@@ -143,9 +138,6 @@ class _AdminEditProductScreenState extends State<AdminEditProductScreen> {
     }
   }
 
-  // ==============================================================
-  // LOGIKA DELETE DENGAN TOKEN JWT
-  // ==============================================================
   Future<void> _deleteProduct() async {
     setState(() => _isLoading = true);
     try {
@@ -159,7 +151,7 @@ class _AdminEditProductScreenState extends State<AdminEditProductScreen> {
       final response = await http.delete(
         Uri.parse('$baseUrl/products/${widget.productId}'),
         headers: {
-          'Authorization': 'Bearer $token', // Membawa token biar sah
+          'Authorization': 'Bearer $token', 
         },
       );
 
@@ -175,9 +167,6 @@ class _AdminEditProductScreenState extends State<AdminEditProductScreen> {
     }
   }
 
-  // ==============================================================
-  // UI DI BAWAH INI 100% TETAP SEPERTI ASLINYA
-  // ==============================================================
 
   void _handleDelete() {
     showDialog(

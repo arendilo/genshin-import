@@ -33,7 +33,7 @@ router.post('/', authenticateToken, (req, res) => {
                     db.query("INSERT INTO order_items (order_id, weapon_id, weapon_name, quantity, price) VALUES (?, ?, ?, ?, ?)",
                         [newOrderId, item.id, item.name || 'Weapon', item.quantity, item.price], (err) => {
 
-                            // UPDATE STOK KE TABEL PRODUCTS
+                            // UPDATE STOCK KE TABEL PRODUCTS
                             db.query("UPDATE products SET stock = stock - ? WHERE id = ?", [item.quantity, item.id], () => {
                                 completedCount++;
                                 if (completedCount === items.length) {

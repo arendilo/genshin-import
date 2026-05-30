@@ -3,13 +3,11 @@ import 'package:genshin_mobile/screens/main_navigation.dart';
 import 'cart_item.dart';
 
 class CheckoutSuccessScreen extends StatelessWidget {
-  // --- MENERIMA DATA DARI HALAMAN CHECKOUT ---
   final List<CartItem> purchasedItems;
 
   const CheckoutSuccessScreen({Key? key, required this.purchasedItems})
     : super(key: key);
 
-  // Menghitung total dari barang yang dilempar ke sini
   int get _total =>
       purchasedItems.fold(0, (sum, item) => sum + (item.price * item.quantity));
 
@@ -148,7 +146,6 @@ class CheckoutSuccessScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          // --- MENAMPILKAN BARANG YANG DIBELI ---
                           ...purchasedItems
                               .map(
                                 (item) => Padding(
@@ -204,9 +201,7 @@ class CheckoutSuccessScreen extends StatelessWidget {
                         ),
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            // Kosongkan keranjang belanja
                             CartState.items.clear();
-                            // Kembali ke MainNavigation (yang ada menu bawahnya)
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(

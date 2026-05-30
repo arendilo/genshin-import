@@ -88,26 +88,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       setState(() => _isLoading = false);
     }
   }
-
-  // ==============================================================
-  // BAGIAN YANG DI-UPDATE (NYELIPIN TOKEN JWT)
-  // ==============================================================
   Future<void> _deleteWeapon(int id) async {
     final String baseUrl = kIsWeb
         ? 'http://127.0.0.1:3000'
         : 'http://10.0.2.2:3000';
 
     try {
-      // 1. Ambil Token dari memori HP
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
 
-      // 2. Kirim request dengan Header Authorization (Syarat Dosen)
       final response = await http.delete(
         Uri.parse('$baseUrl/products/$id'),
         headers: {
           'Authorization':
-              'Bearer $token', // Membawa token biar dibolehin hapus
+              'Bearer $token', 
         },
       );
 
@@ -124,10 +118,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       _showSnackBar('Failed to delete: $e', Colors.redAccent);
     }
   }
-
-  // ==============================================================
-  // UI DI BAWAH TETAP ORIGINAL PUNYA KAMU
-  // ==============================================================
+  
 
   void _showSnackBar(String msg, Color color) {
     ScaffoldMessenger.of(

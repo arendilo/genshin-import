@@ -317,7 +317,7 @@ class _AdminAddProductScreenState extends State<AdminAddProductScreen> {
                 ),
               )
             : const Text(
-                'Product Added',
+                'Add Product',
                 style: TextStyle(
                   color: Color(0xFF1A0F35),
                   fontWeight: FontWeight.bold,

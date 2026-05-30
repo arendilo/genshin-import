@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:genshin_mobile/buying/checkout_screen.dart';
 import 'package:genshin_mobile/buying/cart_item.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // WAJIB ADA UNTUK AMBIL TOKEN
+import 'package:shared_preferences/shared_preferences.dart'; 
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -40,15 +40,13 @@ class _HomeScreenState extends State<HomeScreen> {
         : 'http://10.0.2.2:3000';
 
     try {
-      // 1. Ambil token dari penyimpanan lokal
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
 
-      // 2. Kirim request dengan membawa kunci masuk (Authorization Token)
       final response = await http.get(
         Uri.parse(
           '$baseUrl/products',
-        ), // Atau '/weapons' jika nama rutenya weapons
+        ), 
         headers: {
           'Content-Type': 'application/json',
           if (token != null) 'Authorization': 'Bearer $token',
@@ -58,7 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (response.statusCode == 200) {
         final decodedData = jsonDecode(response.body);
         setState(() {
-          // Jaga-jaga jika backend mengembalikan JSON object { "data": [...] }
           _products = decodedData is List
               ? decodedData
               : (decodedData['data'] ?? decodedData['weapons'] ?? []);
@@ -79,13 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error terhubung ke server: $e'),
+            content: Text('Error connecting to server: $e'),
             backgroundColor: Colors.redAccent,
           ),
         );
       }
     } finally {
-      // 3. MUTLAK MATIKAN LOADING: Entah sukses atau error, loading wajib berhenti!
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -639,7 +635,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : filteredProducts.isEmpty
                   ? const Center(
                       child: Text(
-                        "Senjata tidak ditemukan.",
+                        "No weapons yet.",
                         style: TextStyle(
                           color: Color(0xFFA89EC9),
                           fontSize: 16,

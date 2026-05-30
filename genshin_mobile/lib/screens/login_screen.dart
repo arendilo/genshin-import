@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: jsonEncode({
           'email': email,
           'password': password,
-          'role': _selectedRole, // Mengirim 'User' atau 'Admin'
+          'role': _selectedRole, 
         }),
       );
 
@@ -74,12 +74,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Login Berhasil!'),
+            content: Text('Login Succesfull!'),
             backgroundColor: Colors.green,
           ),
         );
 
-        // PENGECEKAN ROLE AMAN (ANTI CACAT HURUF KAPITAL)
         String currentRole = (data['user']['role'] ?? '')
             .toString()
             .toLowerCase();
@@ -112,7 +111,13 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
         // clientId: kIsWeb ? '535434343700-bnlkpbs26hr2pi2o4kkn9s6qgoo95qm2.apps.googleusercontent.com': null,
-        clientId: '535434343700-bnlkpbs26hr2pi2o4kkn9s6qgoo95qm2.apps.googleusercontent.com',
+        // clientId: '535434343700-bnlkpbs26hr2pi2o4kkn9s6qgoo95qm2.apps.googleusercontent.com',
+        clientId: kIsWeb 
+            ? '535434343700-bnlkpbs26hr2pi2o4kkn9s6qgoo95qm2.apps.googleusercontent.com' 
+            : '535434343700-4ofjfctfjt9oehc3ra78d63bdoegfc86.apps.googleusercontent.com',
+        serverClientId: kIsWeb 
+            ? null 
+            : '535434343700-bnlkpbs26hr2pi2o4kkn9s6qgoo95qm2.apps.googleusercontent.com',  
         // serverClientId: '535434343700-bnlkpbs26hr2pi2o4kkn9s6qgoo95qm2.apps.googleusercontent.com',
         scopes: ['email', 'profile'],
       );
@@ -132,8 +137,8 @@ class _LoginScreenState extends State<LoginScreen> {
         body: jsonEncode({
           'idToken': googleAuth.idToken, 
           'accessToken': googleAuth.accessToken,
-          'email': googleUser.email,                   // SEND DIRECT EMAIL
-          'name': googleUser.displayName ?? 'Google User' // SEND DIRECT NAME
+          'email': googleUser.email,                   
+          'name': googleUser.displayName ?? 'Google User' 
         }),
       );
 
@@ -151,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(data['message'] ?? 'Login Google Berhasil!'),
+            content: Text(data['message'] ?? 'Login Google Successfull!'),
             backgroundColor: Colors.green,
           ),
         );
